@@ -1,10 +1,22 @@
 import React, { PureComponent } from 'react';
-import { FlatList, View, TouchableOpacity, Text } from 'react-native';
+import { FlatList, View, TouchableOpacity, Text, ActivityIndicator } from 'react-native';
 import { Container, Header, Left, Right, Title, Body } from 'native-base';
 import ItemCell from '../appComponents/itemCell';
 import { Actions } from 'react-native-router-flux';
+import { getList } from '../redux/Actions/CartAction';
+import { connect } from 'react-redux';
 
 class ListView extends PureComponent {
+  constructor(props) {
+    super(props);
+    this.state = {
+
+    }
+  }
+
+  componentDidMount = () => {
+    this.props.getList();
+  }
 
   render = () => {
     return (
@@ -22,17 +34,49 @@ class ListView extends PureComponent {
         </Header>
 
         <View style={{ flex: 1, backgroundColor: '#EBEBEB' }}>
-          <FlatList
-            data={this.props.items}
-            keyExtractor={(item, index) => item.id.toString()}
-            renderItem={({ item }) => <ItemCell listItem={item} fromCardView={false} />}
-            scrollEnabled={true}
-          />
+          {(this.props.loading) ?
+            <ActivityIndicator
+              size='large'
+              color='#7573E1'
+              style={{
+                position: 'absolute',
+                left: 0,
+                right: 0,
+                top: 0,
+                bottom: 0,
+                alignItems: 'center',
+                justifyContent: 'center'
+              }}
+            />
+            :
+            <FlatList
+              data={this.props.cardData}
+              keyExtractor={(item, index) => item.id.toString()}
+              renderItem={({ item }) => <ItemCell listItem={item} fromCardView={false} />}
+              scrollEnabled={true}
+            />
+          }
         </View>
       </Container>
     )
   }
-
 }
 
-export default ListView;
+const mapStateToProps = (state) => {
+  return {
+    cardData: state.card.cardData,
+    loading: state.card.loading,
+    error: state.card.error,
+  }
+}
+
+const mapDispatchToProps = (dispatch) => {
+  return {
+    getList: () => {
+      dispatch(getList())
+    }
+  }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(ListView);
+
