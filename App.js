@@ -6,10 +6,11 @@ import ItemDetails from './app/screens/ItemDetails';
 import CardListView from './app/screens/CardListView';
 import { Provider } from 'react-redux';
 import { PersistGate } from 'redux-persist/lib/integration/react';
-import { persistor, store } from './app/redux/Store';
+import CreateStore from './app/redux/Store';
 
 class App extends PureComponent {
   render = () => {
+    const { store, persistor } = CreateStore();
     return (
       <Provider store={store}>
         <PersistGate loading={null} persistor={persistor}>
