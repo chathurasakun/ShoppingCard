@@ -7,14 +7,14 @@ import { removeFromCart } from '../redux/Actions/CartAction';
 
 class ItemCell extends PureComponent {
 
-  removeItemFromCart = (item) => {
+  _removeItemFromCart = () => {
     Alert.alert(
       'Warning',
       'Are you sure?',
       [
         {
           text: 'Ok',
-          onPress: () => { this.props.removeFromCart(item); },
+          onPress: () => { this.props.removeFromCart(this.props.listItem); },
         },
         {
           text: 'Cancel',
@@ -26,36 +26,43 @@ class ItemCell extends PureComponent {
 
   render = () => {
     return (
-      <TouchableOpacity onPress={() => {
-        if (!this.props.fromCardView)
-          Actions.push('itemDetails', { 'itemDesc': this.props.listItem });
-      }}
-      >
-        <View style={ItemCellStyle.MainContainer}>
-          <Image
-            style={ItemCellStyle.Image}
-            source={{ uri: this.props.listItem.image }}
-          />
-          {(this.props.fromCardView) ?
-            <View style={{ flexDirection: 'row' }}>
-              <View style={ItemCellStyle.InnerContainer}>
-                <Text style={ItemCellStyle.ItemName}>{this.props.listItem.name}</Text>
-                <Text style={ItemCellStyle.ItemPrice}>Rs {this.props.listItem.price}.00</Text>
-                <Text>Ordered Item Count: {this.props.listItem.count}</Text>
-                <Text>Total Price: {this.props.listItem.count * this.props.listItem.price}</Text>
-              </View>
-              <TouchableOpacity onPress={() => this.removeItemFromCart(this.props.listItem)}>
-                <Image source={AppImage.delete} style={{ width: 40, height: 40, marginLeft: 20 }} />
-              </TouchableOpacity>
+      (!this.props.fromCardView) ?
+        <TouchableOpacity onPress={() => Actions.push('itemDetails', { 'itemDesc': this.props.listItem })}>
+          <View style={ItemCellStyle.MainContainer}>
+            <View style={{ flex: 0.3, alignItems: 'stretch' }}>
+              <Image
+                style={ItemCellStyle.Image}
+                source={{ uri: this.props.listItem.image }}
+              />
             </View>
-            :
             <View style={ItemCellStyle.InnerContainer}>
-              <Text style={ItemCellStyle.ItemName}>{this.props.listItem.name}</Text>
+              <Text numberOfLines={1} style={ItemCellStyle.ItemName}>{this.props.listItem.name}</Text>
               <Text style={ItemCellStyle.ItemPrice}>Rs {this.props.listItem.price}.00</Text>
             </View>
-          }
-        </View>
-      </TouchableOpacity>
+          </View>
+        </TouchableOpacity>
+        :
+        <TouchableOpacity>
+          <View style={ItemCellStyle.MainContainer}>
+            <View style={{ flex: 0.3, alignItems: 'stretch' }}>
+              <Image
+                style={ItemCellStyle.Image}
+                source={{ uri: this.props.listItem.image }}
+              />
+            </View>
+            <View style={ItemCellStyle.InnerContainer}>
+              <Text numberOfLines={1} style={ItemCellStyle.ItemName}>{this.props.listItem.name}</Text>
+              <Text style={ItemCellStyle.ItemPrice}>Rs {this.props.listItem.price}.00</Text>
+              <Text style={ItemCellStyle.ItemPrice}>Ordered Item Count: {this.props.listItem.count}</Text>
+              <Text style={ItemCellStyle.ItemPrice}>Total Price: {this.props.listItem.count * this.props.listItem.price}</Text>
+            </View>
+            <View style={ItemCellStyle.ImageWrapper}>
+              <TouchableOpacity onPress={this._removeItemFromCart}>
+                <Image source={AppImage.delete} style={ItemCellStyle.DeleteImage} />
+              </TouchableOpacity>
+            </View>
+          </View>
+        </TouchableOpacity>
     )
   }
 
@@ -74,28 +81,44 @@ export default connect(null, mapDispatchToProps)(ItemCell);
 const ItemCellStyle = StyleSheet.create({
   'MainContainer': {
     flexDirection: 'row',
-    padding: 10,
-    borderColor: '#9B9B9B',
+    padding: 5,
     borderRadius: 5,
-    borderWidth: 2,
+    shadowOffset: { width: 10, height: 10 },
+    shadowColor: 'black',
+    shadowOpacity: 1,
+    elevation: 4,
+    backgroundColor: "#FFFFFF", // invisible color
     marginHorizontal: 10,
     marginVertical: 5,
-    backgroundColor: '#FFFFFF'
+    backgroundColor: '#FFFFFF',
+    height: 120
   },
   'Image': {
-    width: 100,
-    height: 100
+    flex: 1
+  },
+  DeleteImage: {
+    width: 40,
+    height: 40
+  },
+  ImageWrapper: {
+    //position: 'absolute',
+    //top: 5,
+    //right: 5
+    flex: 0.12
   },
   'InnerContainer': {
-    flexDirection: 'column',
-    paddingLeft: 10
+    flex: 0.58
   },
   'ItemName': {
+    paddingLeft: 10,
     fontWeight: '800',
-    fontSize: 17
+    fontSize: 17,
+    width: 150
   },
   ItemPrice: {
+    paddingLeft: 10,
     fontWeight: '300',
     fontSize: 13
   }
 });
+
