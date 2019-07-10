@@ -1,10 +1,11 @@
 import React, { PureComponent } from 'react';
 import { FlatList, StyleSheet, ActivityIndicator } from 'react-native';
 import { Container, Header, Left, Right, Title, Body, Button, Icon } from 'native-base';
-import { getListRequest } from '../redux/Actions/CartAction';
+import { getList } from '../redux/Actions/CartAction';
 import CardView from '../appComponents/CardView';
 import CardList from '../appComponents/CardList';
 import { connect } from 'react-redux';
+import CustomIndicator from '../appComponents/CustomIndicator';
 
 class HomeScreen extends PureComponent {
 
@@ -13,7 +14,7 @@ class HomeScreen extends PureComponent {
   }
 
   _handleRefresh = () => {
-    this.props.getListRequest();
+    this.props.getList();
   }
 
   _renderHeaderComponent = () => {
@@ -30,13 +31,11 @@ class HomeScreen extends PureComponent {
   _renderFooterComponent = () => {
     return (
       (this.props.loading) ?
-        <ActivityIndicator
-          size='large'
-          color='#7573E1'
-          style={{
-            flex: 1,
-            justifyContent: 'flex-end'
-          }}
+        <CustomIndicator
+          isFetching={this.props.loading}
+          empty={this.props.cardData.length === 0}
+          error={''}
+          errorText={''}
         />
         :
         null
@@ -98,8 +97,8 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    getListRequest: () => {
-      dispatch(getListRequest())
+    getList: () => {
+      dispatch(getList())
     }
   }
 }

@@ -3,9 +3,9 @@ import { FlatList, View, TouchableOpacity, Text, ActivityIndicator } from 'react
 import { Container, Header, Left, Right, Title, Body, Button, Icon } from 'native-base';
 import ItemCell from '../appComponents/itemCell';
 import { Actions } from 'react-native-router-flux';
-import Assets from '../functions/image';
-import { getListRequest } from '../redux/Actions/CartAction';
+import { getList } from '../redux/Actions/CartAction';
 import { connect } from 'react-redux';
+import CustomIndicator from '../appComponents/CustomIndicator';
 
 class ListView extends PureComponent {
   // static navigationOptions = {
@@ -19,7 +19,7 @@ class ListView extends PureComponent {
   // };
 
   componentDidMount = () => {
-    this.props.getListRequest();
+    this.props.getList();
   }
 
   render = () => {
@@ -45,18 +45,11 @@ class ListView extends PureComponent {
 
         <View style={{ flex: 1, backgroundColor: '#EBEBEB' }}>
           {(this.props.loading) ?
-            <ActivityIndicator
-              size='large'
-              color='#7573E1'
-              style={{
-                position: 'absolute',
-                left: 0,
-                right: 0,
-                top: 0,
-                bottom: 0,
-                alignItems: 'center',
-                justifyContent: 'center'
-              }}
+            <CustomIndicator
+              isFetching={this.props.loading}
+              empty={this.props.cardData.length === 0}
+              error={''}
+              errorText={''}
             />
             :
             <FlatList
@@ -81,8 +74,8 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    getListRequest: () => {
-      dispatch(getListRequest())
+    getList: () => {
+      dispatch(getList())
     }
   }
 }

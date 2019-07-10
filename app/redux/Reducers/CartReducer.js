@@ -9,7 +9,7 @@ const INITIAL_STATE = {
 	error: ''
 };
 
-const UserReducer = (state = INITIAL_STATE, action) => {
+const CartReducer = (state = INITIAL_STATE, action) => {
 	switch (action.type) {
 		case KeyConstants.default.ADD_TO_CART: {
 			return {
@@ -50,8 +50,7 @@ const UserReducer = (state = INITIAL_STATE, action) => {
 const persistConfig = {
 	key: 'card',
 	storage: storage,
-	timeout: null,
 	blacklist: ['cardData']
 };
 
-export default persistReducer(persistConfig, UserReducer);
+export default persistReducer(persistConfig, CartReducer);

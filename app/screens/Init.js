@@ -1,8 +1,6 @@
 import React, { PureComponent } from 'react';
 import { getAll } from '../server/Service';
-import { Container } from 'native-base';
-import { ActivityIndicator, View } from 'react-native';
-import { Actions } from 'react-native-router-flux';
+import { Actions, ActionConst } from 'react-native-router-flux';
 import CustomIndicator from '../appComponents/CustomIndicator';
 
 class Init extends PureComponent {
@@ -11,7 +9,7 @@ class Init extends PureComponent {
     this.state = {
       isFetching: true,
       items: [],
-      error: null
+      error: ''
     }
   }
 
@@ -21,7 +19,7 @@ class Init extends PureComponent {
         this.setState({
           isFetching: false,
           items: responseJson.fruits
-        }, () => Actions.listView({ items: responseJson.fruits }));
+        }, () => Actions.Authenticated({ type: ActionConst.RESET, items: responseJson.fruits }));
       })
       .catch((error) => {
         console.error(error);
