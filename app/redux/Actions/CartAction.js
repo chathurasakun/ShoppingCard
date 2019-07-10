@@ -1,5 +1,5 @@
 import * as KeyConstants from '../KeyConstants';
-import { getAll } from '../../server/Service';
+import BackendFactory from '../../server/BackendFactory';
 
 export const addToCart = (item) => {
   return {
@@ -38,12 +38,14 @@ export const getListFailure = (json) => {
 export const getList = () => {
   return (dispatch) => {
     dispatch(getListRequest());
-    return getAll()
-      .then((responseJson) => {
-        dispatch(getListSuccess(responseJson.fruits));
+    BackendFactory((api) => {
+      api.getAll((res, error) => {
+        if (res) {
+          dispatch(getListSuccess(res.fruits));
+        } else {
+          dispatch(getListFailure(error));
+        }
       })
-      .catch((error) => {
-        dispatch(getListFailure(error));
-      })
+    })
   };
 };
