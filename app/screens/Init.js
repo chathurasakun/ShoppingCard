@@ -4,14 +4,6 @@ import { connect } from 'react-redux';
 import CustomIndicator from '../appComponents/CustomIndicator';
 
 class Init extends PureComponent {
-  constructor(props) {
-    super(props);
-    this.state = {
-      isFetching: true,
-      items: [],
-      error: ''
-    }
-  }
 
   componentDidMount = () => {
     this.props.getSessionToken();
@@ -20,9 +12,9 @@ class Init extends PureComponent {
   render = () => {
     return (
       <CustomIndicator
-        isFetching={this.state.isFetching}
+        isFetching={true}
         empty={false}
-        error={this.state.error}
+        error={''}
         errorText={''}
       />
     )
