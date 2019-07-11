@@ -1,8 +1,9 @@
 import React, { PureComponent } from 'react';
-import { FlatList, StyleSheet, ActivityIndicator } from 'react-native';
+import { FlatList, StyleSheet } from 'react-native';
 import { Container, Header, Left, Right, Title, Body, Button, Icon } from 'native-base';
 import { getList } from '../redux/Actions/CartAction';
 import CardView from '../appComponents/CardView';
+import { Actions } from 'react-native-router-flux';
 import CardList from '../appComponents/CardList';
 import { connect } from 'react-redux';
 import CustomIndicator from '../appComponents/CustomIndicator';
