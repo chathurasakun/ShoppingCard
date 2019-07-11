@@ -44,6 +44,22 @@ export class ApiServices extends Backend {
       })
   }
 
+  getUser = (userId, cb) => {
+    axios({
+      method: 'GET',
+      url: `http://68.183.92.2:17100/${Endpoints.GET_USER_DETAILS_BY_USER_ID(userId)}`,
+      headers: { 'x-user-token': this._sessionToken }
+    })
+      .then((res) => {
+        console.log(res.data);
+        cb(res);
+      })
+      .catch((error) => {
+        console.log(error);
+        cb({}, error);
+      });
+  }
+
   checkFirstLogin = (data, cb) => {
     axios({
       method: 'POST',

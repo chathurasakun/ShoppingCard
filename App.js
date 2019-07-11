@@ -3,11 +3,12 @@ import { Router, Scene, Drawer } from 'react-native-router-flux';
 import Init from './app/screens/Init';
 import Login from './app/screens/Login';
 import Logout from './app/screens/Logout';
+import FetchUser from './app/screens/FetchUser';
 import ListView from './app/screens/ListView';
 import Home from './app/screens/Home';
 import ItemDetails from './app/screens/ItemDetails';
 import CardListView from './app/screens/CardListView';
-import DrawerNavigator from './app/screens/SideMenu';
+import DrawerNavigator from './app/screens/DrawerNavigator';
 import { Provider } from 'react-redux';
 import { PersistGate } from 'redux-persist/lib/integration/react';
 import CreateStore from './app/redux/Store';
@@ -23,6 +24,7 @@ class App extends PureComponent {
               <Scene key='init' component={Init} type='replace' initial />
 
               <Scene key='Logout' component={Logout} />
+              <Scene key='FetchUser' component={FetchUser} />
 
               <Scene
                 key='Unauthenticated'

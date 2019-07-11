@@ -10,6 +10,11 @@ export default keyMirror({
   GET_LIST_SUCCESS: null,
   GET_LIST_FAILURE: null,
 
+  //user actions
+  GET_USER_REQUEST: null,
+  GET_USER_SUCCESS: null,
+  GET_USER_FAILURE: null,
+
   //auth actions
   SESSION_TOKEN_REQUEST: null,
   SESSION_TOKEN_SUCCESS: null,
