@@ -1,18 +1,14 @@
 import React, { PureComponent } from 'react';
 import {
 	View,
-	TextInput,
 	Text,
-	TouchableOpacity,
-	StyleSheet
+	StyleSheet,
+	StatusBar
 } from 'react-native';
 import { connect } from 'react-redux';
-//import { storeUser } from '../../redux/actions/userAction';
 import { login } from '../redux/Actions/AuthActions';
-//import Images from '../functions/image';
-import { Container, Content, Button } from 'native-base';
-//import jwt_decode from 'jwt-decode';
-//import DropdownAlert from 'react-native-dropdownalert';
+import { Container, Content, Button, Icon, Form, Item, Label, Input } from 'native-base';
+import BackendFactory from '../server/BackendFactory';
 
 class Login extends PureComponent {
 	constructor(props) {
@@ -24,7 +20,7 @@ class Login extends PureComponent {
 			nicError: '',
 			isLogging: false,
 			isPushedToken: false,
-			showPassword: true,
+			showPassword: false,
 			showText: 'SHOW'
 		}
 	}
@@ -49,26 +45,6 @@ class Login extends PureComponent {
 	LoginToDashboard = () => {
 		if (this.state.password !== '' && this.state.passError === '' && this.state.nic !== '' && this.state.nicError === '') {
 			this.props.login(this.state.nic, this.state.password);
-			// this.setState({ isLogging: true }, () => {
-			// 	BackendFactory((api) => {
-			// 		api.login(data, (res, error) => {
-			// 			if (res && res.data) {
-			// 				store.save('sessionToken', { sessionToken: res.data }).then((sessionToken) => {
-			// 					let decode = jwt_decode(res.data.token);
-			// 					this.setState({
-			// 						username: '',
-			// 						password: '',
-			// 						isLogging: false
-			// 					}, () => this.getUserDetailsByUserId(decode));
-			// 				})
-			// 					.catch((error) => console.log(error.message));
-			// 			}
-			// 			else {
-			// 				this.setState({ isLogging: false }, () => this.dropdown.alertWithType('error', '', 'Please Check Password'));
-			// 			}
-			// 		});
-			// 	});
-			// });
 		}
 		else {
 			if (this.state.password === '') {
@@ -93,25 +69,6 @@ class Login extends PureComponent {
 	// 		});
 	// 	});
 	// }
-
-	getUserDetailsByUserId = (decode) => {
-		this.setState({ isLogging: true }, () => {
-			BackendFactory((api) => {
-				api.getUser(decode.userID, (res, error) => {
-					if (res && res.data) {
-						this.setState({ isLogging: false }, () => {
-							const newUser = { ...res.data, ...decode };
-							this.props.storeUser(newUser);
-							this.persistPushToken();
-						});
-					}
-					else {
-						this.setState({ isLogging: false }, () => this.dropdown.alertWithType('error', 'Error', error.message));
-					}
-				});
-			});
-		});
-	}
 
 	passwordIsEmpty = (text) => {
 		if (text.length < 8) {
@@ -144,47 +101,99 @@ class Login extends PureComponent {
 		}
 	}
 
+	handleFacebookLogin = () => {
+		BackendFactory((api) => {
+			api.fburl((res, error) => {
+				if (res) {
+					console.log(res.results);
+					//console.log('Facebook URL Failure');
+					//Actions.push('Facebook', { fburl: data.results })
+				} else {
+					//	Open Facebook WebView
+					console.log(res);
+				}
+			});
+		});
+	};
+
 	render = () => {
 		return (
 			<Container>
+				<StatusBar translucent animated barStyle="dark-content" backgroundColor='rgba(0,0,0,0)' />
 				<Content keyboardShouldPersistTaps='always'>
-					<View style={Loginstyle.inputContainer}>
-						<TextInput
-							style={Loginstyle.inputs}
-							editable={true}
-							placeholder={'Nic'}
-							placeholderTextColor='#000000'
-							ref='nic'
-							keyboardType='default'
-							underlineColorAndroid='transparent'
-							onChangeText={(nic) => this.validateNIC(nic)}
-							value={this.state.nic}
-						/>
-					</View>
-					<View style={Loginstyle.inputContainer}>
-						<TextInput
-							style={Loginstyle.inputs}
-							editable={true}
-							placeholder={'Password'}
-							placeholderTextColor='#000000'
-							ref='password'
-							returnKeyType='next'
-							secureTextEntry={this.state.showPassword}
-							underlineColorAndroid='transparent'
-							onChangeText={(password) => this.passwordIsEmpty(password)}
-							value={this.state.password}
-						/>
-						<TouchableOpacity
-							hitSlop={{ top: 20, left: 20, bottom: 20, right: 20 }}
-							style={{ flex: 0.12 }}
-							onPress={() => this.showPassword()}>
-							<Text style={{ color: '#000000', fontSize: 11 }}>{this.state.showText}</Text>
-						</TouchableOpacity>
-					</View>
-					<View style={{ flex: 1, justifyContent: 'flex-end', marginBottom: 20, alignSelf: 'center' }}>
-						<Button style={{ justifyContent: 'center', alignItems: 'center', backgroundColor: '#1422D5', width: 300, height: 55, borderRadius: 8 }} transparent onPress={this.LoginToDashboard}>
-							<Text style={{ color: '#FFFFFF', fontSize: 17, fontWeight: '700' }}>Login</Text>
-						</Button>
+					<View style={Loginstyle.innerContainer}>
+						<View style={Loginstyle.iconTop}>
+							<Text style={Loginstyle.iconTopText}>HM</Text>
+						</View>
+
+						<View style={{ marginBottom: 10 }}>
+							<Button
+								rounded block iconLeft
+								//disabled={this.props.auth.form.isFetching}
+								onPress={this.handleFacebookLogin}
+								style={StyleSheet.flatten(Loginstyle.fbButton)}>
+								<Icon name='logo-facebook' />
+								<Text style={Loginstyle.loginButtonText}>Continue with Facebook</Text>
+							</Button>
+						</View>
+
+						<View style={Loginstyle.orTextDividerContainer}>
+							<Text style={{ fontSize: 17 }}>OR</Text>
+						</View>
+
+						<Form>
+							<Item stackedLabel error={(this.state.nicError !== '') ? true : false}>
+								<Label>Nic</Label>
+								<Input
+									keyboardType='default'
+									//disabled={this.props.auth.form.isFetching}
+									onChangeText={(nic) => this.validateNIC(nic)}
+									autoCapitalize='none'
+								/>
+							</Item>
+							<Text style={Loginstyle.fieldErrorText}>{this.state.nicError}</Text>
+
+							<View style={Loginstyle.passwordFieldContainer}>
+								<Item stackedLabel error={(this.state.passError !== '') ? true : false} style={StyleSheet.flatten(Loginstyle.passwordField)}>
+									<Label>Password</Label>
+									<Input
+										secureTextEntry={!this.state.showPassword}
+										//disabled={this.props.auth.form.isFetching}
+										onChangeText={(password) => this.passwordIsEmpty(password)}
+										value={this.state.password}
+									/>
+								</Item>
+
+								<Icon
+									active
+									name={(this.state.showPassword) ? 'eye' : 'eye-off'}
+									onPress={() => this.showPassword()}
+									style={StyleSheet.flatten(Loginstyle.showPasswordIcon)} />
+							</View>
+
+							<Text style={Loginstyle.fieldErrorText}>{this.state.passError}</Text>
+						</Form>
+
+						<View style={Loginstyle.loginButtonContainer}>
+							<Button
+								rounded block
+								disabled={this.state.nic === '' || this.state.password === '' || this.state.passError !== '' || this.state.nicError !== ''}
+								onPress={this.LoginToDashboard}
+								style={StyleSheet.flatten((this.state.nic === '' || this.state.password === '' || this.state.passError !== '' || this.state.nicError !== '') ? Loginstyle.loginButtonDisabled : Loginstyle.loginButton)}>
+								<Text style={Loginstyle.loginButtonText}>Login</Text>
+							</Button>
+						</View>
+
+						<View style={[Loginstyle.navLinkContainer, { flexDirection: 'row' }]}>
+							<Text style={[Loginstyle.navLinkText, { flex: 1, textAlign: 'center' }]}>
+								{'Forgot your password? '}
+								<Text
+									onPress={() => console.log('forget password')}
+									style={Loginstyle.navLink}>
+									{'Reset password'}
+								</Text>
+							</Text>
+						</View>
 					</View>
 				</Content>
 			</Container>
@@ -208,50 +217,92 @@ const Loginstyle = StyleSheet.create({
 		alignItems: 'center',
 		backgroundColor: '#DCDCDC',
 	},
-	imageContainer: {
-		top: 50,
-		borderRadius: 8,
-		color: '#000000'
+	innerContainer: {
+		marginLeft: 16,
+		marginRight: 16,
+		marginBottom: 10,
+		marginTop: 10
 	},
-	inputContainer: {
-		borderColor: '#000000',
-		borderWidth: 1,
-		marginHorizontal: 20,
-		marginVertical: 10,
-		//marginBottom: 8,
-		flexDirection: 'row',
-		alignItems: 'center',
-		borderRadius: 3
-	},
-	inputs: {
-		fontSize: 15,
-		flex: 1,
-		color: '#000000'
-	},
-	buttonContainer: {
-		height: '7%',
-		flexDirection: 'row',
+	iconTop: {
+		backgroundColor: '#7573E1',
+		width: 100,
+		height: 100,
+		borderRadius: 10,
 		justifyContent: 'center',
 		alignItems: 'center',
-		marginBottom: 12,
-		width: '85%',
-		borderRadius: 3
+		alignSelf: 'center',
+		marginBottom: 30,
+		marginTop: 20
+	},
+	iconTopText: {
+		color: '#FFFFFF',
+		fontSize: 22,
+		fontWeight: 'bold'
+	},
+	fbButton: {
+		backgroundColor: '#4862a3',
+	},
+	orTextDividerContainer: {
+		flex: 1,
+		flexDirection: 'row',
+		marginTop: 5,
+		justifyContent: 'center',
+	},
+	loginButtonContainer: {
+		marginBottom: 10
+	},
+	loginButton: {
+		backgroundColor: '#095ae4',
+		marginTop: 8,
+	},
+	loginButtonDisabled: {
+		backgroundColor: '#7d9de4',
+		marginTop: 8,
+	},
+	loginButtonText: {
+		fontSize: 15,
+		color: 'white',
+		marginLeft: 10
+	},
+	fieldErrorText: {
+		color: 'red',
+		marginLeft: 15
+	},
+	showPasswordIcon: {
+		paddingTop: 30,
+		color: 'gray'
+	},
+	passwordFieldContainer: {
+		flex: 1,
+		flexDirection: 'row',
+		justifyContent: 'center',
+		alignItems: 'center'
+	},
+	passwordField: {
+		flex: 1
+	},
+	navLinkContainer: {
+		marginTop: 10,
+		marginBottom: 10,
+		flexDirection: 'row',
+		alignSelf: 'center',
+	},
+	navLinkText: {
+		fontSize: 14,
+		color: '#303f9f'
+	},
+	navLink: {
+		fontSize: 14,
+		fontWeight: 'bold',
+		color: '#303f9f'
 	},
 	loginButton: {
 		backgroundColor: '#000000'
 	},
-	registerButton: {
-		backgroundColor: '#000000'
-	},
-	loginText: {
-		color: '#7573E1',
-		fontWeight: '500',
-		fontSize: 14
-	},
-	registerText: {
-		color: '#007CC4',
-		fontWeight: 'bold',
-		fontSize: 15
+	loginButtonText: {
+		fontSize: 16,
+		color: 'white',
+		marginLeft: 10
 	}
 });
 
