@@ -12,10 +12,9 @@ const INITIAL_STATE = {
 const CartReducer = (state = INITIAL_STATE, action) => {
 	switch (action.type) {
 		case KeyConstants.default.ADD_TO_CART: {
-			return {
-				...state,
-				cardList: [...state.cardList, action.payload]
-			}
+			let cardList = state.cardList.slice();
+			cardList.push(action.payload);
+			return { ...state, cardList }
 		}
 		case KeyConstants.default.REMOVE_FROM_CART: {
 			let cardList = state.cardList.filter((existingItem) => existingItem.id !== action.payload.id);
