@@ -1,6 +1,8 @@
 import React, { PureComponent } from 'react';
 import { Router, Scene, Drawer } from 'react-native-router-flux';
 import Init from './app/screens/Init';
+import Login from './app/screens/Login';
+import Logout from './app/screens/Logout';
 import ListView from './app/screens/ListView';
 import Home from './app/screens/Home';
 import ItemDetails from './app/screens/ItemDetails';
@@ -19,6 +21,20 @@ class App extends PureComponent {
           <Router navigationBarStyle={{ backgroundColor: '#7573E1' }}>
             <Scene key='root' hideNavBar>
               <Scene key='init' component={Init} type='replace' initial />
+
+              <Scene key='Logout' component={Logout} />
+
+              <Scene
+                key='Unauthenticated'
+                hideNavBar
+                type="replace">
+                <Scene
+                  key='Login'
+                  component={Login}
+                  initial
+                  panHandlers={null} />
+              </Scene>
+
               <Scene
                 key='Authenticated'
                 hideNavBar
@@ -56,6 +72,7 @@ class App extends PureComponent {
                   <Scene key='cardListView' component={CardListView} type='replace' />
                 </Scene>
               </Scene>
+
             </Scene>
           </Router>
         </PersistGate>
