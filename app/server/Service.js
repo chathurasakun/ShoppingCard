@@ -73,6 +73,25 @@ export class ApiServices extends Backend {
         cb({}, error);
       })
   }
+
+  fburl = (cb) => {
+    axios({
+      method: 'GET',
+      url: 'auth/fbAuthUrl'
+    })
+      .then((res) => {
+        console.log(res);
+        if (res.status === 200 || res.status === 201) {
+          cb(res.json);
+        } else {
+          cb({}, res.json)
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+        cb({}, error);
+      })
+  }
 }
 
 export let apiServices = new ApiServices();
