@@ -165,7 +165,7 @@ export const login = (email, password) => {
           return saveSessionToken(res.data)
             .then(function () {
               dispatch(loginSuccess(res.data));
-              Actions.Authenticated({ type: ActionConst.RESET });
+              Actions.FetchUser({ type: ActionConst.RESET, userId: email });
               //dispatch(logoutState());
             })
         } else {
